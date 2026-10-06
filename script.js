@@ -32,7 +32,34 @@ function operate(operator, a, b) {
     }
 } 
 
-console.log(operate("+", 5, 3));
-console.log(operate("-", 5, 3));
-console.log(operate("*", 5, 3));
-console.log(operate("/", 6, 3));
+let firstNumber = "";
+let secondNumber = "";
+let operator = "";
+
+const answer = document.querySelector("#answer");
+const buttons = document.querySelectorAll(".buttons button");
+const expression = document.querySelector("#expression");
+
+buttons.forEach(function(button) {
+    button.addEventListener("click", function() {
+        if(button.textContent === "+" || button.textContent === "-" || button.textContent === "*" || button.textContent === "/") {
+            operator = button.textContent;
+            expression.textContent += button.textContent;
+        }
+
+        else if(operator !== "" && button.textContent !== "=") {
+            expression.textContent += button.textContent;
+            secondNumber += button.textContent;
+        }
+
+        else if(operator === "") {
+            expression.textContent += button.textContent;
+            firstNumber += button.textContent;
+        }
+
+        else if(button.textContent === "=") {
+            let result = operate(operator, parseFloat(firstNumber), parseFloat(secondNumber));
+            answer.textContent = result;
+        }
+    })
+})
