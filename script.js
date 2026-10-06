@@ -51,6 +51,12 @@ buttons.forEach(function(button) {
         }
         
         else if(button.textContent === "+" || button.textContent === "-" || button.textContent === "*" || button.textContent === "/") {
+            if (secondNumber !== "") {
+                let result = operate(operator, parseFloat(firstNumber), parseFloat(secondNumber));
+                firstNumber = result.toString();
+                secondNumber = "";
+            }
+
             operator = button.textContent;
             expression.textContent += button.textContent;
         }
@@ -67,7 +73,7 @@ buttons.forEach(function(button) {
 
         else if(button.textContent === "=") {
             let result = operate(operator, parseFloat(firstNumber), parseFloat(secondNumber));
-            answer.textContent = result;
+            answer.textContent = Math.round(result * 1000000) / 1000000;
         }
     })
 })
