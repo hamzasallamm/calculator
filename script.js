@@ -72,9 +72,13 @@ buttons.forEach(function(button) {
         }
 
         else if(button.textContent === "=") {
-            if (firstNumber !== "" && secondNumber !== "" && operator !== "") {
-                let result = operate(operator, parseFloat(firstNumber), parseFloat(secondNumber));
-            answer.textContent = Math.round(result * 1000000) / 1000000;
+            try{
+                if (firstNumber !== "" && secondNumber !== "" && operator !== "") {
+                    let result = operate(operator, parseFloat(firstNumber), parseFloat(secondNumber));
+                answer.textContent = Math.round(result * 1000000) / 1000000;
+                }
+            } catch (error) {
+                answer.textContent = error.message;
             }
         }
     })
