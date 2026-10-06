@@ -17,8 +17,22 @@ function divide(a, b) {
     return a / b;
 } 
 
-console.log(add(5, 3));
-console.log(subtract(5, 3));
-console.log(multiply(5, 3));
-console.log(divide(6, 3));
-console.log("Hello, World!");
+function operate(operator, a, b) {
+    switch (operator){
+        case '+':
+            return add(a,b);
+        case '-':
+            return subtract(a,b);
+        case '*':
+            return multiply(a,b);
+        case '/':
+            return divide(a,b);
+        default:
+            throw new Error("Invalid operator");  
+    }
+} 
+
+console.log(operate("+", 5, 3));
+console.log(operate("-", 5, 3));
+console.log(operate("*", 5, 3));
+console.log(operate("/", 6, 3));
