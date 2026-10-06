@@ -2,3 +2,15 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
 }
+
+#expression{
+    border: 1px solid black;
+    padding: 10px;
+    min-height: 20px;
+}
+
+#answer{
+    border: 1px solid black;
+    padding: 10px;
+    min-height: 20px;
+}

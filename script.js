@@ -42,7 +42,15 @@ const expression = document.querySelector("#expression");
 
 buttons.forEach(function(button) {
     button.addEventListener("click", function() {
-        if(button.textContent === "+" || button.textContent === "-" || button.textContent === "*" || button.textContent === "/") {
+        if(button.textContent === "C") {
+            firstNumber = "";
+            secondNumber = "";
+            operator = "";
+            expression.textContent = "";
+            answer.textContent = "";
+        }
+        
+        else if(button.textContent === "+" || button.textContent === "-" || button.textContent === "*" || button.textContent === "/") {
             operator = button.textContent;
             expression.textContent += button.textContent;
         }
