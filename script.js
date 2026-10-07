@@ -15,26 +15,27 @@ function divide(a, b) {
         throw new Error("Cannot divide by zero");
     }
     return a / b;
-} 
+}
 
 function operate(operator, a, b) {
-    switch (operator){
+    switch (operator) {
         case '+':
-            return add(a,b);
+            return add(a, b);
         case '-':
-            return subtract(a,b);
+            return subtract(a, b);
         case '*':
-            return multiply(a,b);
+            return multiply(a, b);
         case '/':
-            return divide(a,b);
+            return divide(a, b);
         default:
-            throw new Error("Invalid operator");  
+            throw new Error("Invalid operator");
     }
-} 
+}
 
 let firstNumber = "";
 let secondNumber = "";
 let operator = "";
+let justPressedEquals = false;
 
 const answer = document.querySelector("#answer");
 const buttons = document.querySelectorAll(".buttons button");
@@ -42,44 +43,73 @@ const expression = document.querySelector("#expression");
 
 buttons.forEach(function(button) {
     button.addEventListener("click", function() {
-        if(button.textContent === "C") {
+        if (button.textContent === "C") {
             firstNumber = "";
             secondNumber = "";
             operator = "";
             expression.textContent = "";
             answer.textContent = "";
+            justPressedEquals = false;
         }
-        
-        else if(button.textContent === "+" || button.textContent === "-" || button.textContent === "*" || button.textContent === "/") {
+
+        else if (button.textContent === "+" || button.textContent === "-" || button.textContent === "*" || button.textContent === "/") {
+            if (justPressedEquals) {
+                expression.textContent = firstNumber;
+                answer.textContent = "";
+                justPressedEquals = false;
+            }
+
             if (secondNumber !== "") {
-                let result = operate(operator, parseFloat(firstNumber), parseFloat(secondNumber));
-                firstNumber = result.toString();
-                secondNumber = "";
+                try {
+                    let result = operate(operator, parseFloat(firstNumber), parseFloat(secondNumber));
+                    firstNumber = result.toString();
+                    secondNumber = "";
+                } catch (error) {
+                    firstNumber = "";
+                    secondNumber = "";
+                    operator = "";
+                    expression.textContent = "";
+                    answer.textContent = error.message;
+                    return;
+                }
             }
 
             operator = button.textContent;
             expression.textContent += button.textContent;
         }
 
-        else if(operator !== "" && button.textContent !== "=") {
-            expression.textContent += button.textContent;
-            secondNumber += button.textContent;
-        }
-
-        else if(operator === "") {
-            expression.textContent += button.textContent;
-            firstNumber += button.textContent;
-        }
-
-        else if(button.textContent === "=") {
-            try{
+        else if (button.textContent === "=") {
+            try {
                 if (firstNumber !== "" && secondNumber !== "" && operator !== "") {
                     let result = operate(operator, parseFloat(firstNumber), parseFloat(secondNumber));
-                answer.textContent = Math.round(result * 1000000) / 1000000;
+                    result = Math.round(result * 1000000) / 1000000;
+                    answer.textContent = result;
+                    firstNumber = result.toString();
+                    secondNumber = "";
+                    operator = "";
+                    justPressedEquals = true;
                 }
             } catch (error) {
                 answer.textContent = error.message;
             }
         }
-    })
-})
+
+        else if (justPressedEquals) {
+            firstNumber = button.textContent;
+            secondNumber = "";
+            expression.textContent = button.textContent;
+            answer.textContent = "";
+            justPressedEquals = false;
+        }
+
+        else if (operator !== "") {
+            expression.textContent += button.textContent;
+            secondNumber += button.textContent;
+        }
+
+        else {
+            expression.textContent += button.textContent;
+            firstNumber += button.textContent;
+        }
+    });
+});
