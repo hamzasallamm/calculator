@@ -36,6 +36,8 @@ let firstNumber = "";
 let secondNumber = "";
 let operator = "";
 let justPressedEquals = false;
+let pendingNumber = "";
+let pendingOperator = "";
 
 const answer = document.querySelector("#answer");
 const buttons = document.querySelectorAll(".buttons button");
@@ -47,6 +49,8 @@ buttons.forEach(function(button) {
             firstNumber = "";
             secondNumber = "";
             operator = "";
+            pendingNumber = "";
+            pendingOperator = "";
             expression.textContent = "";
             answer.textContent = "";
             justPressedEquals = false;
@@ -61,13 +65,28 @@ buttons.forEach(function(button) {
 
             if (secondNumber !== "") {
                 try {
-                    let result = operate(operator, parseFloat(firstNumber), parseFloat(secondNumber));
-                    firstNumber = result.toString();
-                    secondNumber = "";
+                    if ((button.textContent === "*" || button.textContent === "/") && (operator === "+" || operator === "-")) {
+                        // PEMDAS: hold the + or - until the * or / is done
+                        pendingNumber = firstNumber;
+                        pendingOperator = operator;
+                        firstNumber = secondNumber;
+                        secondNumber = "";
+                    } else {
+                        let result = operate(operator, parseFloat(firstNumber), parseFloat(secondNumber));
+                        if ((button.textContent === "+" || button.textContent === "-") && pendingOperator !== "") {
+                            result = operate(pendingOperator, parseFloat(pendingNumber), result);
+                            pendingNumber = "";
+                            pendingOperator = "";
+                        }
+                        firstNumber = result.toString();
+                        secondNumber = "";
+                    }
                 } catch (error) {
                     firstNumber = "";
                     secondNumber = "";
                     operator = "";
+                    pendingNumber = "";
+                    pendingOperator = "";
                     expression.textContent = "";
                     answer.textContent = error.message;
                     return;
@@ -82,6 +101,11 @@ buttons.forEach(function(button) {
             try {
                 if (firstNumber !== "" && secondNumber !== "" && operator !== "") {
                     let result = operate(operator, parseFloat(firstNumber), parseFloat(secondNumber));
+                    if (pendingOperator !== "") {
+                        result = operate(pendingOperator, parseFloat(pendingNumber), result);
+                        pendingNumber = "";
+                        pendingOperator = "";
+                    }
                     result = Math.round(result * 1000000) / 1000000;
                     answer.textContent = result;
                     firstNumber = result.toString();
@@ -90,6 +114,8 @@ buttons.forEach(function(button) {
                     justPressedEquals = true;
                 }
             } catch (error) {
+                pendingNumber = "";
+                pendingOperator = "";
                 answer.textContent = error.message;
             }
         }
